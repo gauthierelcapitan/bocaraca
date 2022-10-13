@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+
+  python:
+    container_name: ${COMPOSE_PROJECT_NAME}_python
+    build:
+      dockerfile: ./docker/${ENV}/python/Dockerfile
+      context: .
+    expose:
+      - 8888
+    working_dir: /app
+    volumes:
+      - ./../python:/app:rw,delegated
+      - ./../data:/data:rw,delegated
+    networks:
+      - bocaraca_network
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+    command: jupyter notebook --notebook-dir=/app --ip='*' --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+
+networks:
+  bocaraca_network:
+    driver: bridge
